@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: eureka-master-service
+server:
+  port: 8000
+eureka:
+  server:
+    # 关闭自我保护
+    enable-self-preservation: false
+    # readOnlyMap 过期时间
+    responseCacheUpdateIntervalMs: 30000
+    # 清理间隔时间
+    eviction-interval-timer-in-ms: 30000
+  instance:
+    hostname: 127.0.0.1
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
