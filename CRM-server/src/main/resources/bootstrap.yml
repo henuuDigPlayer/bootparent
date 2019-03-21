@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: approve-server
+  profile: dev
+  cloud:
+    config:
+      profile: ${spring.profile}
+      discovery:
+        enabled: true
+        serviceId: config-server
+      name: ${spring.application.name}
+      label: master
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8000/eureka/
+

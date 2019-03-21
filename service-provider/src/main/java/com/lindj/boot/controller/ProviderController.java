@@ -22,4 +22,9 @@ public class ProviderController {
     public String getValue(){
         return this.consumerClient.getList();
     }
+
+    @GetMapping(value = "/set")
+    public String get(){
+        return "lindj";
+    }
 }

@@ -2,7 +2,7 @@ spring:
   application:
     name: eureka-master-service
 server:
-  port: 8000
+  port: ${SERVER_PORT}
 eureka:
   server:
     # 关闭自我保护
@@ -12,7 +12,7 @@ eureka:
     # 清理间隔时间
     eviction-interval-timer-in-ms: 30000
   instance:
-    hostname: 127.0.0.1
+    hostname: ${EUREKA_URL}
   client:
     registerWithEureka: false
     fetchRegistry: false
