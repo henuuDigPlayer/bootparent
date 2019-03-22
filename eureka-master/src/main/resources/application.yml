@@ -12,6 +12,7 @@ eureka:
     # 清理间隔时间
     eviction-interval-timer-in-ms: 30000
   instance:
+    preferIpAddress: true
     hostname: ${EUREKA_URL}
   client:
     registerWithEureka: false

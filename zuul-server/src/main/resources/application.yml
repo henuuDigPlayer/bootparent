@@ -2,9 +2,11 @@ spring:
   application:
     name: zuul-server
 server:
-  port: ${SERVER_PORT}
+  port: 8002
 eureka:
   instance:
+    preferIpAddress: true
+    instance-id: 183.131.202.13:${spring.application.name}:${server.port}
     # 超过这个时间没有心跳，eurekaserver 删除该服务
     lease-expiration-duration-in-seconds: 90
     # 每隔30秒与注册中心心跳一次
@@ -15,7 +17,7 @@ eureka:
     # 刷新本地缓存
     registry-fetch-interval-seconds: 5
     service-url:
-      defaultZone: http://${EUREKA_URL}:${EUREKA_PORT}/eureka/
+      defaultZone: http://183.131.202.13:8000/eureka/
 zuul:
   routes:
     provider-service:

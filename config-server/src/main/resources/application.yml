@@ -15,6 +15,8 @@ server:
   port: ${SERVER_PORT}
 eureka:
   instance:
+    preferIpAddress: true
+    instance-id: 183.131.202.13:${spring.application.name}:${server.port}
     # 超过这个时间没有心跳，eurekaserver 删除该服务
     lease-expiration-duration-in-seconds: 90
     # 每隔30秒与注册中心心跳一次
