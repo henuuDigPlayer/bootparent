@@ -11,7 +11,7 @@ spring:
       name: ${spring.application.name}
       label: master
 server:
-  port: ${SERVER_PORT}
+  port: 8004
 eureka:
   instance:
     hostname: 183.131.202.13
