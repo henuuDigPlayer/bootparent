@@ -3,7 +3,7 @@
 application_name=$1
 port=$2
 service_name="${application_name}-server"
-eureka_url=127.0.0.1
+eureka_url=183.131.202.13
 eureka_port=8000
 
 echo "container is stoping and removing"
