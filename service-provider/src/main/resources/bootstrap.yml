@@ -16,7 +16,7 @@ eureka:
   instance:
     hostname: 183.131.202.13
     service-url:
-      defaultZone: http://${EUREKA_URL}:8000/eureka/
+      defaultZone: http://183.131.202.13:8000/eureka/
 ribbon:
   # ribbon刷新时间
   ServerListRefreshInterval: 30000
