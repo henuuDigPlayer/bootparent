@@ -11,11 +11,14 @@ spring:
       name: ${spring.application.name}
       label: master
     bus:
-      refresh:
-        enabled: true
-  kafka:
-    bootstrap-servers:
-    - 183.131.202.13:9092
+      enabled: true
+    stream:
+      kafka:
+        binder:
+          brokers: 183.131.202.13
+          defaultBrokerPort: 9092
+          zkNodes: 183.131.202.13
+          defaultZkPort: 2181
 eureka:
   instance:
     hostname: 183.131.202.13
@@ -23,5 +26,7 @@ eureka:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8000/eureka/
 management:
-  security:
-    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
