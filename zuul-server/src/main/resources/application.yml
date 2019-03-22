@@ -5,6 +5,7 @@ server:
   port: 8002
 eureka:
   instance:
+    hostname: 183.131.202.13
     preferIpAddress: true
     instance-id: 183.131.202.13:${spring.application.name}:${server.port}
     # 超过这个时间没有心跳，eurekaserver 删除该服务
