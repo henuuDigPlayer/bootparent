@@ -1,6 +1,7 @@
 package com.lindj.boot.controller;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
  * @description
  */
 @Component
+@RefreshScope
 @ConfigurationProperties(prefix = "lindj")
 public class ConfigParams {
 

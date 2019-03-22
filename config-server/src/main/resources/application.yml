@@ -14,6 +14,8 @@ spring:
     bus:
       refresh:
         enable: true
+      trace:
+        enable: true
     stream:
       kafka:
         binder:

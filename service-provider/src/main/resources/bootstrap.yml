@@ -10,9 +10,18 @@ spring:
         serviceId: config-server
       name: ${spring.application.name}
       label: master
+    bus:
+      refresh:
+        enabled: true
+  kafka:
+    bootstrap-servers:
+    - 183.131.202.13:9092
 eureka:
   instance:
     hostname: 183.131.202.13
   client:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8000/eureka/
+management:
+  security:
+    enabled: false
