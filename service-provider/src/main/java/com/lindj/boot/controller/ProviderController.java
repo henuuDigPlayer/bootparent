@@ -17,6 +17,8 @@ public class ProviderController {
 
     @Autowired
     private ConsumerClient consumerClient;
+    @Autowired
+    private ConfigParams configParams;
 
     @GetMapping(value = "/get")
     public String getValue(){
@@ -24,7 +26,7 @@ public class ProviderController {
     }
 
     @GetMapping(value = "/set")
-    public String get(){
-        return "lindj";
+    public Object get(){
+        return  this.configParams.getId();
     }
 }

@@ -1,21 +1,30 @@
 spring:
   application:
     name: provider-service
+  profile: dev
+  cloud:
+    config:
+      profile: ${spring.profile}
+      discovery:
+        enabled: true
+        serviceId: config-server
+      name: ${spring.application.name}
+      label: master
 server:
   port: ${SERVER_PORT}
 eureka:
   instance:
     hostname: 183.131.202.13
-    instance-id: ${eureka.instance.name}:${spring.application.name}:${server.port}
+    #instance-id: ${eureka.instance.name}:${spring.application.name}:${server.port}
     # 超过这个时间没有心跳，eurekaserver 删除该服务
-    lease-expiration-duration-in-seconds: 90
+    #lease-expiration-duration-in-seconds: 90
     # 每隔30秒与注册中心心跳一次
-    lease-renewal-interval-in-seconds: 30
-  client:
-    healthcheck:
-      enabled: true
+    #lease-renewal-interval-in-seconds: 30
+  #client:
+  #  healthcheck:
+  #    enabled: true
     # 刷新本地缓存
-    registry-fetch-interval-seconds: 5
+  #  registry-fetch-interval-seconds: 5
     service-url:
       defaultZone: http://${EUREKA_URL}:8000/eureka/
 ribbon:
