@@ -11,6 +11,20 @@ spring:
           password: Lrt1061599031
           skipSslValidation: true
           force-pull: true
+    bus:
+      refresh:
+        enable: true
+    stream:
+      kafka:
+        binder:
+          brokers: 183.131.202.13
+          defaultBrokerPort: 9092
+          zkNodes: 183.131.202.13
+          defaultZkPort: 2181
+  kafka:
+    bootstrap-servers: 183.131.202.13:9092
+    consumer:
+      group-id: test
 server:
   port: ${SERVER_PORT}
 eureka:
@@ -28,3 +42,6 @@ eureka:
     registry-fetch-interval-seconds: 5
     service-url:
       defaultZone: http://${EUREKA_URL}:${EUREKA_PORT}/eureka/
+management:
+  security:
+    enabled: false
