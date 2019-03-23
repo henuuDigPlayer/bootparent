@@ -21,10 +21,10 @@ eureka:
 zuul:
   routes:
     eureka-server:
-      path: /api-eureka/**
+      path: /eureka-eureka/**
       serviceId: eureka-server
     config-server:
-      path: /api-config/**
+      path: /config-config/**
       serviceId: config-server
     approve-server:
       path: /approve-server/**
