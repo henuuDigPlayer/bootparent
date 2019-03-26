@@ -6,9 +6,9 @@ spring:
   datasource:
     enable: true
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://183.131.202.186:3306/zuul?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://183.131.202.13:3300/zuul?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
-    password: wanbo@123
+    password: lindj
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 5
     minIdle: 5
@@ -24,20 +24,5 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: 20
     filters: stat,wall,slf4j
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-eureka:
-  instance:
-    hostname: 183.131.202.13
-    instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
-    # 超过这个时间没有心跳，eurekaserver 删除该服务
-    lease-expiration-duration-in-seconds: 60
-    # 每隔30秒与注册中心心跳一次
-    lease-renewal-interval-in-seconds: 30
-  client:
-    healthcheck:
-      enabled: true
-    # 刷新本地缓存
-    registry-fetch-interval-seconds: 5
-    service-url:
-      defaultZone: http://${eureka.instance.hostname}:8000/eureka/
 server:
   port: 8002

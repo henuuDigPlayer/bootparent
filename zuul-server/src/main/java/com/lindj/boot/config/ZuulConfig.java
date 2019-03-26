@@ -33,8 +33,8 @@ public class ZuulConfig {
     public DynamicRouter propertiesRouter() {
         return new DynamicRouter(this.server.getServlet().getServletPrefix(), this.zuulProperties);
     }
-    @Bean
+/*    @Bean
     public RoutesRefreshFilter getRoutesRefreshFilter(){
         return new RoutesRefreshFilter();
-    }
+    }*/
 }

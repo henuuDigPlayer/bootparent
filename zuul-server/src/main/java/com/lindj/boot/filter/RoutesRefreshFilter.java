@@ -2,12 +2,16 @@ package com.lindj.boot.filter;
 
 import com.lindj.boot.service.DynamicRouter;
 import com.lindj.boot.service.RouteService;
+import com.lindj.boot.service.ZuulRefreshService;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.RoutesRefreshedEvent;
+import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
+import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,21 +21,17 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2019/3/25
  * @description
  */
-//@Component
+@Component
 public class RoutesRefreshFilter extends ZuulFilter {
 
-    @Autowired
-    DynamicRouter routeLocator;
-
-    @Autowired
-    ApplicationEventPublisher publisher;
-
+  /*  @Autowired
+    private ZuulRefreshService zuulRefreshService;*/
     @Autowired
     private RouteService routeService;
 
     @Override
     public String filterType() {
-        return "pre";
+        return FilterConstants.PRE_TYPE;
     }
 
     @Override
@@ -49,15 +49,8 @@ public class RoutesRefreshFilter extends ZuulFilter {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
         String servletPath = request.getServletPath();
-        servletPath = servletPath.substring(servletPath.indexOf("/") + 1, servletPath.length());
-        if(servletPath.contains("/")){
-            servletPath = servletPath.substring(0, servletPath.indexOf("/"));
-        }
-        String value = RouteService.SingletonEnum.INSTANCE.getValue(servletPath);
-        System.out.println(request.getServletPath());
-       /* if(StringUtils.isEmpty(value)){
-            publisher.publishEvent(new RoutesRefreshedEvent(routeLocator));
-        }*/
+        System.out.println(servletPath);
+
         return null;
     }
 }

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author lindj
@@ -27,18 +26,6 @@ public class RouteService {
 
     @Autowired
     private RouteMapper routeMapper;
-
-
-    public Route getRouteByServiceId(String serviceId){
-        RouteExample example = new RouteExample();
-        example.createCriteria().andStatusEqualTo(StatusEnum.OK.getCode()).andServiceIdEqualTo(serviceId);
-        List<Route> list = this.routeMapper.selectByExample(example);
-        if(list != null && list.size() > 0){
-            return list.get(0);
-        }
-        return null;
-    }
-
 
     public Map<String, ZuulProperties.ZuulRoute> getRoutes() {
         RouteExample example = new RouteExample();
@@ -60,36 +47,6 @@ public class RouteService {
             zuulRoute.setId(result.getId().toString());
             routes.put(zuulRoute.getPath(), zuulRoute);
         }
-        Map<String, String> values = new HashMap<String, String>();
-        routes.forEach((key, value) -> {
-            values.put(key, key);
-        });
-
-        SingletonEnum.INSTANCE.setReadOnlyMap(values);
         return routes;
-    }
-
-    public enum SingletonEnum {
-        /**
-         * SingletonEnum
-         */
-        INSTANCE;
-        private ConcurrentHashMap<String, String> readOnlyMap;
-
-        SingletonEnum() {
-            readOnlyMap =
-                    new ConcurrentHashMap<String, String>();
-        }
-        public void setReadOnlyMap(Map<String, String> values) {
-            values.forEach((key, value) ->{
-                readOnlyMap.put(key, value);
-            });
-            this.readOnlyMap = readOnlyMap;
-        }
-
-        public String getValue(String key){
-            return readOnlyMap.get(key);
-        }
-
     }
 }
