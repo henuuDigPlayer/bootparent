@@ -2,11 +2,11 @@ spring:
   application:
     name: consumer-service
 server:
-  port: ${SERVER_PORT}
+  port: 8005
 eureka:
   instance:
-    hostname: 183.131.202.13
-    instance-id: ${eureka.instance.name}:${spring.application.name}:${server.port}
+    hostname: 192.168.1.198
+    instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
     # 超过这个时间没有心跳，eurekaserver 删除该服务
     lease-expiration-duration-in-seconds: 90
     # 每隔30秒与注册中心心跳一次
@@ -17,10 +17,16 @@ eureka:
     # 刷新本地缓存
     registry-fetch-interval-seconds: 5
     service-url:
-      defaultZone: http://${EUREKA_URL}:8000/eureka/
+      defaultZone: http://183.131.202.13:8000/eureka/
 ribbon:
   # ribbon刷新时间
   ServerListRefreshInterval: 30000
 feign:
   hystrix:
     enabled: true
+logging:
+  level:
+    root: error
+    com.lindj.boot.controller: debug
+  config: classpath:log4j2-spring.xml
+  path: H:/logs/${spring.application.name}/

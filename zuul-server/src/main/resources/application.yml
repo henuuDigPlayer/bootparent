@@ -1,12 +1,33 @@
+mybatis:
+  mapper-locations: mapper/*.xml
 spring:
   application:
     name: zuul-server
-server:
-  port: 8002
+  datasource:
+    enable: true
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://183.131.202.186:3306/zuul?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: wanbo@123
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,slf4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
 eureka:
   instance:
     hostname: 183.131.202.13
-    instance-id: 183.131.202.13:${spring.application.name}:${server.port}
+    instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
     # 超过这个时间没有心跳，eurekaserver 删除该服务
     lease-expiration-duration-in-seconds: 60
     # 每隔30秒与注册中心心跳一次
@@ -17,60 +38,6 @@ eureka:
     # 刷新本地缓存
     registry-fetch-interval-seconds: 5
     service-url:
-      defaultZone: http://183.131.202.13:8000/eureka/
-zuul:
-  routes:
-    eureka-server:
-      path: /eureka-eureka/**
-      serviceId: eureka-server
-    config-server:
-      path: /config-config/**
-      serviceId: config-server
-    approve-server:
-      path: /approve-server/**
-      serviceId: approve-server
-    coupon-server:
-      path: /coupon-server/**
-      serviceId: coupon-server
-    CRM-server:
-      path: /CRM-server/**
-      serviceId: CRM-server
-    crmroute-server:
-      path: /crmroute-server/**
-      serviceId: crmroute-server
-    deliver-server:
-      path: /deliver-server/**
-      serviceId: deliver-server
-    evaluate-server:
-      path: /evaluate-server/**
-      serviceId: evaluate-server
-    group-server:
-      path: /group-server/**
-      serviceId: group-server
-    integration-server:
-      path: /integration-server/**
-      serviceId: integration-server
-    mall-server:
-      path: /mall-server/**
-      serviceId: mall-server
-    marketing-server:
-      path: /marketing-server/**
-      serviceId: marketing-server
-    medical-server:
-      path: /medical-server/**
-      serviceId: medical-server
-    order-server:
-      path: /order-server/**
-      serviceId: order-server
-    pay-server:
-      path: /pay-server/**
-      serviceId: pay-server
-    prepaidcard-server:
-      path: /prepaidcard-server/**
-      serviceId: prepaidcard-server
-    setting-server:
-      path: /setting-server/**
-      serviceId: setting-server
-    user-server:
-      path: /user-server/**
-      serviceId: user-server
+      defaultZone: http://${eureka.instance.hostname}:8000/eureka/
+server:
+  port: 8002
