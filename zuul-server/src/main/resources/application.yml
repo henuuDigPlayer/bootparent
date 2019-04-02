@@ -6,7 +6,7 @@ spring:
   datasource:
     enable: true
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://183.131.202.186:3306/zuul?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://183.131.202.186:3306/CRM?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
     password: wanbo@123
     type: com.alibaba.druid.pool.DruidDataSource
@@ -24,5 +24,11 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: 20
     filters: stat,wall,slf4j
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  kafka:
+    bootstrap-servers: 183.131.202.13:9092
+    producer:
+      # 指定消息key和消息体的编解码方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 server:
   port: 8002

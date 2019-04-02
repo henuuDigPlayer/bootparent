@@ -4,7 +4,7 @@ import java.util.Date;
 
 /**
  * @author: lindj
- * @date: 2019-03-25 15:50:49
+ * @date: 2019-03-29 18:43:01
  * @description:  
  */
 public class Route {
@@ -31,20 +31,20 @@ public class Route {
     /**
      * 路由前缀是否在转发开始前被删除 默认是删除
      */
-    private boolean stripPrefix;
+    private Integer stripPrefix;
 
     /**
      * 是否支持重试
      */
-    private Boolean retryable;
+    private Integer retryable;
 
     /**
      * 
      */
-    private boolean customSensitiveHeaders;
+    private Integer customSensitiveHeaders;
 
     /**
-     * 
+     * -1删除 1正常
      */
     private Integer status;
 
@@ -62,6 +62,21 @@ public class Route {
      * 
      */
     private Date modifyTime;
+
+    /**
+     * 联系人
+     */
+    private String linkMan;
+
+    /**
+     * 电话
+     */
+    private String telphone;
+
+    /**
+     * 邮件
+     */
+    private String email;
 
     /**
      * 路由的唯一编号
@@ -140,7 +155,7 @@ public class Route {
      *
      * @return strip_prefix 路由前缀是否在转发开始前被删除 默认是删除
      */
-    public boolean getStripPrefix() {
+    public Integer getStripPrefix() {
         return stripPrefix;
     }
 
@@ -149,7 +164,7 @@ public class Route {
      *
      * @param stripPrefix 路由前缀是否在转发开始前被删除 默认是删除
      */
-    public void setStripPrefix(boolean stripPrefix) {
+    public void setStripPrefix(Integer stripPrefix) {
         this.stripPrefix = stripPrefix;
     }
 
@@ -158,7 +173,7 @@ public class Route {
      *
      * @return retryable 是否支持重试
      */
-    public Boolean getRetryable() {
+    public Integer getRetryable() {
         return retryable;
     }
 
@@ -167,7 +182,7 @@ public class Route {
      *
      * @param retryable 是否支持重试
      */
-    public void setRetryable(Boolean retryable) {
+    public void setRetryable(Integer retryable) {
         this.retryable = retryable;
     }
 
@@ -176,7 +191,7 @@ public class Route {
      *
      * @return custom_sensitive_headers 
      */
-    public boolean getCustomSensitiveHeaders() {
+    public Integer getCustomSensitiveHeaders() {
         return customSensitiveHeaders;
     }
 
@@ -185,23 +200,23 @@ public class Route {
      *
      * @param customSensitiveHeaders 
      */
-    public void setCustomSensitiveHeaders(boolean customSensitiveHeaders) {
+    public void setCustomSensitiveHeaders(Integer customSensitiveHeaders) {
         this.customSensitiveHeaders = customSensitiveHeaders;
     }
 
     /**
-     * 
+     * -1删除 1正常
      *
-     * @return status 
+     * @return status -1删除 1正常
      */
     public Integer getStatus() {
         return status;
     }
 
     /**
-     * 
+     * -1删除 1正常
      *
-     * @param status 
+     * @param status -1删除 1正常
      */
     public void setStatus(Integer status) {
         this.status = status;
@@ -259,5 +274,59 @@ public class Route {
      */
     public void setModifyTime(Date modifyTime) {
         this.modifyTime = modifyTime;
+    }
+
+    /**
+     * 联系人
+     *
+     * @return link_man 联系人
+     */
+    public String getLinkMan() {
+        return linkMan;
+    }
+
+    /**
+     * 联系人
+     *
+     * @param linkMan 联系人
+     */
+    public void setLinkMan(String linkMan) {
+        this.linkMan = linkMan == null ? null : linkMan.trim();
+    }
+
+    /**
+     * 电话
+     *
+     * @return telphone 电话
+     */
+    public String getTelphone() {
+        return telphone;
+    }
+
+    /**
+     * 电话
+     *
+     * @param telphone 电话
+     */
+    public void setTelphone(String telphone) {
+        this.telphone = telphone == null ? null : telphone.trim();
+    }
+
+    /**
+     * 邮件
+     *
+     * @return email 邮件
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * 邮件
+     *
+     * @param email 邮件
+     */
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim();
     }
 }

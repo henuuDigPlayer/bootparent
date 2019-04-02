@@ -14,14 +14,13 @@
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <modules>
-    <module>eureka-master</module>
-    <module>service-provider</module>
     <module>service-consumer</module>
     <module>service-client</module>
     <module>config-server</module>
     <module>zuul-server</module>
-    <module>CRM-server</module>
     <module>provider-server</module>
+    <module>log-server</module>
+    <module>eureka-server</module>
   </modules>
 
   <name>boot-parent</name>
@@ -35,6 +34,7 @@
     <mybatis-spring-boot>1.3.0</mybatis-spring-boot>
     <mysql-connector>5.1.39</mysql-connector>
     <druid>1.1.9</druid>
+    <spring-kafka>2.1.10.RELEASE</spring-kafka>
   </properties>
 
   <dependencyManagement>
