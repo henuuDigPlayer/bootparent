@@ -13,6 +13,7 @@ eureka:
     eviction-interval-timer-in-ms: 30000
   instance:
     hostname: ${EUREKA_HOST}
+    instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
   client:
     #是否将自己这个服务注册到EurekaServer中  默认True 此服务为Server
     #registerWithEureka: false
