@@ -6,20 +6,22 @@ server:
 eureka:
   server:
     # 关闭自我保护
-    enable-self-preservation: true
+    enable-self-preservation: false
+    use-read-only-response-cache: false
+    response-cache-auto-expiration-in-seconds: 10
     # readOnlyMap 过期时间
 #    responseCacheUpdateIntervalMs: 30000
     # 清理间隔时间
-    eviction-interval-timer-in-ms: 60000
+#    eviction-interval-timer-in-ms: 60000
     # 集群之间相互更新节点信息的时间频率
     #peer-eureka-nodes-update-interval-ms: 1000
   instance:
     hostname: ${EUREKA_HOST}
     instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
       # 超过这个时间没有心跳，eurekaserver 删除该服务
-    lease-expiration-duration-in-seconds: 90
+#    lease-expiration-duration-in-seconds: 90
       # 每隔30秒与注册中心心跳一次
-    lease-renewal-interval-in-seconds: 30
+#    lease-renewal-interval-in-seconds: 30
   client:
     #是否将自己这个服务注册到EurekaServer中  默认True 此服务为Server
     registerWithEureka: true
