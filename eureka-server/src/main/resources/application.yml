@@ -10,7 +10,7 @@ eureka:
     # readOnlyMap 过期时间
     responseCacheUpdateIntervalMs: 30000
     # 清理间隔时间
-    eviction-interval-timer-in-ms: 30000
+    eviction-interval-timer-in-ms: 60000
   instance:
     hostname: ${EUREKA_HOST}
     instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
