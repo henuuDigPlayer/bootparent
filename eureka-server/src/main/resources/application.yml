@@ -18,7 +18,7 @@ eureka:
     instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
   client:
     #是否将自己这个服务注册到EurekaServer中  默认True 此服务为Server
-    registerWithEureka: true
+    registerWithEureka: false
     #是否从EurekaServer获取注册信息 默认True 单点ES不存在其他的EurkaServer,所以为False
     fetchRegistry: true
     serviceUrl:
