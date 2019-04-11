@@ -1,46 +1,75 @@
+mybatis-plus:
+  mapper-locations: mapper/*.xml
 spring:
   application:
     name: log-server
-  cloud:
-    config:
-      server:
-        git:
-          uri: https://183.131.202.182/medicalCenter/springcloud-config.git
-          search-paths: '{application}'                             #git仓库地址下的相对地址，可以配置多个，用,分割。
-          username: lirt@data4truth.com                                            # git仓库的账号
-          password: Lrt1061599031
-          skipSslValidation: true
-          force-pull: true
-    bus:
+  devtools:
+    restart:
       enabled: true
-      trace:
+  datasource:
+    url: jdbc:mysql://183.131.202.186:3306/log?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: wanbo@123
+    druid:
+      initial-size: 5
+      max-active: 8
+      min-idle: 0
+      max-wait: -1
+      query-timeout: 10
+      validation-query: SELECT 1
+      use-global-data-source-stat: true
+      # 开启 StatFilter，默认开启，可通过 'enabled: false' 关闭
+      stat:
         enabled: true
-    stream:
-      kafka:
-        binder:
-          brokers: 183.131.202.13,61.174.254.22
-          defaultBrokerPort: 9092
-          zkNodes: 183.131.202.13,61.174.254.22
-          defaultZkPort: 2181
+        log-slow-sql: true
+        slow-sql-millis: 10000
+      # 开启 Slf4jFilter
+      slf4j:
+        enabled: true
+        data-source-log-enabled: false
+        connection-log-enabled: false
+        statement-log-enabled: false
+        result-set-log-enabled: false
+      # 开启 WallFilter
+      wall:
+        enabled: true
+        log-violation: true
+        throw-exception: false
+        ## WallConfig 配置
+        config:
+          delete-where-none-check: true
+      # 开启 Web 监控
+      web-stat:
+        enabled: true
+      # 开启 Aop 监控
+      aop-stat:
+        enabled: true
+      # 开启监控页面
+      stat-view-servlet:
+        enabled: true
+  kafka:
+    bootstrap-servers: 183.131.202.13:9092
+    # 指定默认消费者group id
+    consumer:
+      group-id: test
+      enable-auto-commit: true
+      auto-commit-interval: 100
+      # 指定消息key和消息体的编解码方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 server:
-  port: ${SERVER_PORT}
-eureka:
-  instance:
-    hostname: ${EUREKA_HOST}
-    instance-id: ${eureka.instance.hostname}:${spring.application.name}:${server.port}
-    # 超过这个时间没有心跳，eurekaserver 删除该服务
-    lease-expiration-duration-in-seconds: 90
-    # 每隔30秒与注册中心心跳一次
-    lease-renewal-interval-in-seconds: 30
-  client:
-    healthcheck:
-      enabled: true
-    # 刷新本地缓存
-    registry-fetch-interval-seconds: 5
-    service-url:
-      defaultZone: http://${EUREKA_URL}:${EUREKA_PORT}/eureka/,http://${EUREKA_SLAVE_URL}:${EUREKA_SLAVE_PORT}/eureka/
-management:
-  endpoints:
-    web:
-      exposure:
-        include: bus-refresh
+  port: 8002
+constants:
+  writeMapExpire: 180
+  readMapExpire: 30
+  writeMapSize: 1000
+  threadPool:
+    enable: true
+    corePoolSize: 10
+    maxPoolSize: 100
+    queueCapacity: 10
+
+
+endpoints:
+  druid:
+    enabled: true

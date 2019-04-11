@@ -27,6 +27,11 @@ public class RouteService {
     @Autowired
     private RouteMapper routeMapper;
 
+    /**
+     * 获取所有路由
+     *
+     * @return Map<String, ZuulProperties.ZuulRoute>
+     */
     public Map<String, ZuulProperties.ZuulRoute> getRoutes() {
         RouteExample example = new RouteExample();
         example.createCriteria().andStatusEqualTo(StatusEnum.OK.getCode());
@@ -48,5 +53,22 @@ public class RouteService {
             routes.put(zuulRoute.getPath(), zuulRoute);
         }
         return routes;
+    }
+
+    /**
+     * 根据服务名称获取服务路由信息
+     *
+     * @param serviceId String
+     * @return Route
+     */
+    public Route getRouteByServiceId(String serviceId) {
+        RouteExample example = new RouteExample();
+        example.createCriteria().andStatusEqualTo(StatusEnum.OK.getCode()).andServiceIdEqualTo(serviceId);
+        List<Route> results = this.routeMapper.selectByExample(example);
+        if (!StringUtils.isEmpty(results)) {
+            return results.get(0);
+        }
+
+        return null;
     }
 }
