@@ -52,7 +52,7 @@ public class LoggerConsumerService {
                 BaseResponse response = JsonUtil.parseToObject(body, BaseResponse.class);
                 if (!response.getCode().equals(ResultCode.Codes.SUCCESS.getCode())) {
                     content = PropertyUtil.getProperty("requestError", timeout.toString()) + logBean.toString();
-                    messageManager.sendMessage(logBean.getTelephone(), logBean.toString());
+                    messageManager.sendMessage(logBean.getTelephone(), content);
                 }
             }
             if (logBean.getComplete() > timeout) {
