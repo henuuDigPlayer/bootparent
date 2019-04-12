@@ -85,7 +85,7 @@ public class LogFilter extends ZuulFilter {
 
         String body = null;
         String contentType = requestContext.getResponse().getContentType();
-        if(contentType.contains("json")){
+        if(!StringUtil.isEmpty(contentType) && contentType.contains("json")){
             InputStream inputStream = requestContext.getResponseDataStream();
             body = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
             requestContext.setResponseBody(body);
