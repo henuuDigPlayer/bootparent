@@ -83,9 +83,14 @@ public class LogFilter extends ZuulFilter {
         Long beginTime = (Long) request.getAttribute("beginTime");
         Long complete = System.currentTimeMillis() - beginTime;
 
-        InputStream inputStream = requestContext.getResponseDataStream();
-        String body = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
-        requestContext.setResponseBody(body);
+        String body = null;
+        String contentType = requestContext.getResponse().getContentType();
+        if(contentType.contains("json")){
+            InputStream inputStream = requestContext.getResponseDataStream();
+            body = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+            requestContext.setResponseBody(body);
+        }
+
 
         Route route = this.routeService.getRouteByServiceId(servletPath);
 
