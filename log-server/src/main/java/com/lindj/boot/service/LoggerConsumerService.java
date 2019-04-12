@@ -7,6 +7,7 @@ import com.zjdex.framework.bean.BaseResponse;
 import com.zjdex.framework.util.PropertyUtil;
 import com.zjdex.framework.util.ResultCode;
 import com.zjdex.framework.util.data.JsonUtil;
+import com.zjdex.framework.util.data.StringUtil;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -43,24 +44,21 @@ public class LoggerConsumerService {
         if (kafkaMessage.isPresent()) {
             LogBean logBean = JsonUtil.parseToObject(kafkaMessage.get(), LogBean.class);
             String body =  logBean.getContent();
-            logger.info("日志信息: {}", JsonUtil.objectToJson(logBean));
-            logger.info("接口返回信息: {}",  body);
-            BaseResponse response = JsonUtil.parseToObject(body, BaseResponse.class);
-
             Long timeout = Long.parseLong(sysConstantConfig.getValue("requestTimeOut"));
             String content = null;
-            if(!response.getCode().equals(ResultCode.Codes.SUCCESS.getCode())){
-                content = PropertyUtil.getProperty("requestError", timeout.toString()) + logBean.toString();
-                messageManager.sendMessage(logBean.getTelephone(), logBean.toString());
+            if(!StringUtil.isEmpty(body)) {
+                logger.info("日志信息: {}", JsonUtil.objectToJson(logBean));
+                logger.info("接口返回信息: {}", body);
+                BaseResponse response = JsonUtil.parseToObject(body, BaseResponse.class);
+                if (!response.getCode().equals(ResultCode.Codes.SUCCESS.getCode())) {
+                    content = PropertyUtil.getProperty("requestError", timeout.toString()) + logBean.toString();
+                    messageManager.sendMessage(logBean.getTelephone(), logBean.toString());
+                }
             }
-            else if(logBean.getComplete() > timeout){
+            if (logBean.getComplete() > timeout) {
                 content = PropertyUtil.getProperty("requestTimeOutError", timeout.toString()) + logBean.toString();
                 messageManager.sendMessage(logBean.getTelephone(), content);
             }
-            else {
-                logger.info("请求正常");
-            }
-
 //            socket.emit("chat message", message);
         }
 
