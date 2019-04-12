@@ -46,9 +46,10 @@ public class LoggerConsumerService {
             String body =  logBean.getContent();
             Long timeout = Long.parseLong(sysConstantConfig.getValue("requestTimeOut"));
             String content = null;
+            logger.info("日志信息: {}", JsonUtil.objectToJson(logBean));
             if(!StringUtil.isEmpty(body)) {
-                logger.info("日志信息: {}", JsonUtil.objectToJson(logBean));
-                logger.info("接口返回信息: {}", body);
+
+
                 BaseResponse response = JsonUtil.parseToObject(body, BaseResponse.class);
                 if (!response.getCode().equals(ResultCode.Codes.SUCCESS.getCode())) {
                     content = PropertyUtil.getProperty("requestError", timeout.toString()) + logBean.toString();

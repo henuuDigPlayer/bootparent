@@ -3,6 +3,7 @@ package com.lindj.boot.filter;
 import com.lindj.boot.bean.LogBean;
 import com.lindj.boot.model.Route;
 import com.lindj.boot.service.RouteService;
+import com.netflix.util.Pair;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -25,6 +26,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author lindj
@@ -83,9 +85,18 @@ public class LogFilter extends ZuulFilter {
         Long beginTime = (Long) request.getAttribute("beginTime");
         Long complete = System.currentTimeMillis() - beginTime;
 
+
         String body = null;
-        String contentType = requestContext.getResponse().getContentType();
-        if(!StringUtil.isEmpty(contentType) && contentType.contains("json")){
+        String contentType = null;
+//        System.out.println(JsonUtil.objectToJson(requestContext.getResponse().getContentType()));
+        List<Pair<String, String>> headerList = RequestContext.getCurrentContext().getOriginResponseHeaders();
+        for (Pair<String, String> pair : headerList) {
+            if (pair.first().equals("Content-Type")) {
+                contentType = pair.second();
+            }
+        }
+        System.out.println(contentType);
+        if(!StringUtil.isEmpty(contentType) && !contentType.contains("image/gif")){
             InputStream inputStream = requestContext.getResponseDataStream();
             body = StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
             requestContext.setResponseBody(body);
