@@ -14,8 +14,6 @@ eureka_port=8000
 #eureka从节点端口
 eureka_slave_port=8001
 
-
-
 echo "container is stoping and removing"
 
 containerId=$(docker ps -a | grep -E "${service_name}" | awk '{print $1}')
@@ -31,7 +29,7 @@ fi
 
 echo "image and container ware removed and image is building"
 cd ..
-
+mvn clean compile
 cd ${service_name}
 mvn clean compile
 mvn package -Dmaven.test.skip=true docker:build
@@ -45,5 +43,6 @@ docker run -p ${port}:${port} \
        --env EUREKA_PORT=${eureka_port} \
        --env EUREKA_SLAVE_PORT=${eureka_slave_port} \
        --env EUREKA_SLAVE_URL=${eureka_slave_url} \
+       --name ${service_name}_${port} \
        -v /data/servers/logs/${service_name}/:/data/servers/logs/${service_name} \
        -t ${service_name}:1.0-SNAPSHOT
