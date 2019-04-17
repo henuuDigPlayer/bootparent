@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          uri: https://183.131.202.182/pi/springcloud-config.git
+          uri: https://183.131.202.182/medicalCenter/springcloud-config.git
           search-paths: '{application}'                             #git仓库地址下的相对地址，可以配置多个，用,分割。
           username: lirt@data4truth.com                                            # git仓库的账号
           password: Lrt1061599031
