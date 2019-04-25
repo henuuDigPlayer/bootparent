@@ -40,7 +40,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>app</finalName>
+        <finalName>config-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -62,7 +62,7 @@
                         <resource>
                             <targetPath>/</targetPath>
                             <directory>${project.build.directory}</directory>
-                            <include>app.jar</include>
+                            <include>config-server.jar</include>
                         </resource>
                     </resources>
                 </configuration>

@@ -67,7 +67,7 @@
     </dependencies>
 
     <build>
-        <finalName>app</finalName>
+        <finalName>zuul-server</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -89,7 +89,7 @@
                         <resource>
                             <targetPath>/</targetPath>
                             <directory>${project.build.directory}</directory>
-                            <include>app.jar</include>
+                            <include>zuul-server.jar</include>
                         </resource>
                     </resources>
                 </configuration>
