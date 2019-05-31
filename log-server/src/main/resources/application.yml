@@ -48,8 +48,11 @@ spring:
       stat-view-servlet:
         enabled: true
   kafka:
-    bootstrap-servers: 183.131.202.13:9092
+    bootstrap-servers: 183.131.202.13:9092,61.174.254.22:9092
     # 指定默认消费者group id
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
       group-id: test
       enable-auto-commit: true
@@ -58,7 +61,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 server:
-  port: ${SERVER_PORT}
+  port: 8002
 constants:
   writeMapExpire: 180
   readMapExpire: 30

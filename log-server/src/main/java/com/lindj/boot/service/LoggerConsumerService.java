@@ -1,8 +1,10 @@
 package com.lindj.boot.service;
 
 import com.lindj.boot.bean.LogBean;
+import com.lindj.boot.bean.MessageEntity;
 import com.lindj.boot.config.SysConstantConfig;
 import com.lindj.boot.manager.MessageManager;
+import com.lindj.boot.model.OrderInfo;
 import com.zjdex.framework.bean.BaseResponse;
 import com.zjdex.framework.util.PropertyUtil;
 import com.zjdex.framework.util.ResultCode;
@@ -15,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -31,14 +35,14 @@ public class LoggerConsumerService {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggerConsumerService.class);
 
-    private Socket socket;
+/*    private Socket socket;*/
 
     @Autowired
     private MessageManager messageManager;
     @Autowired
     private SysConstantConfig sysConstantConfig;
 
-    @KafkaListener(topics = {"logs"})
+   /* @KafkaListener(topics = {"logs"})
     public void listen(ConsumerRecord<String, String> record) {
         Optional<String> kafkaMessage = Optional.ofNullable(record.value());
         if (kafkaMessage.isPresent()) {
@@ -63,11 +67,23 @@ public class LoggerConsumerService {
 //            socket.emit("chat message", message);
         }
 
-    }
+    }*/
 
-    @PostConstruct
+ /*   @PostConstruct
     private void getPushConnection() throws URISyntaxException {
         socket = IO.socket("http://192.168.1.152:3000");
         socket.connect();
+    }
+*/
+
+    @KafkaListener(topics = "test")
+    public void listen(ConsumerRecord<?, ?> record, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic){
+        Optional<?> kafkaMessage = Optional.ofNullable(record.value());
+        if(kafkaMessage.isPresent()){
+            Object message = kafkaMessage.get();
+            logger.info("{}", message.toString());
+            MessageEntity orderInfo = JsonUtil.parseToObject(message.toString(), MessageEntity.class);
+            logger.info(orderInfo.getTitle());
+        }
     }
 }
