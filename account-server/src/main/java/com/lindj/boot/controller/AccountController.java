@@ -1,17 +1,15 @@
 package com.lindj.boot.controller;
 
-import com.lindj.boot.config.JwtProperties;
+import com.lindj.boot.config.shiro.token.TokenProperties;
 import com.lindj.boot.model.SysUser;
 import com.lindj.boot.service.SysUserService;
 import com.lindj.boot.util.JwtUtil;
 import com.lindj.boot.util.ResponseBean;
 import com.lindj.boot.util.SecurityConsts;
 import com.lindj.boot.util.UnauthorizedException;
+import com.zjdex.framework.holder.RequestHolder;
 import com.zjdex.framework.holder.ResponseHolder;
-import com.zjdex.framework.util.data.JsonUtil;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.subject.Subject;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,7 @@ public class AccountController {
     @Autowired
     private SysUserService userService;
     @Autowired
-    private JwtProperties jwtProperties;
+    private TokenProperties tokenProperties;
     @Autowired
     private RedissonClient redissonClient;
 
@@ -59,7 +57,19 @@ public class AccountController {
 
     @PostMapping("/logout")
     public Object logout() {
-        return new ResponseBean(200, "Login success", "123123");
+        String token = RequestHolder.getHeader(SecurityConsts.REQUEST_AUTH_HEADER);
+        String account = JwtUtil.getClaim(token, SecurityConsts.ACCOUNT);
+        String tokenKey= SecurityConsts.PREFIX_SHIRO_REFRESH_TOKEN + account;
+        String rightKey = SecurityConsts.PREFIX_SHIRO_CACHE + account;
+        RBucket tokenBucket = redissonClient.getBucket(tokenKey);
+        RBucket rightbucket = redissonClient.getBucket(rightKey);
+        if (tokenBucket != null) {
+            tokenBucket.delete();
+        }
+        if (rightbucket != null) {
+            rightbucket.delete();
+        }
+        return new ResponseBean(200, "logout success", "123123");
     }
 
     /**
@@ -81,14 +91,13 @@ public class AccountController {
         RBucket refreshBucket = redissonClient.getBucket(refreshTokenKey);
         if (refreshBucket != null && refreshBucket.get() != null) {
             refreshBucket.set(currentTimeMillis,
-                    jwtProperties.getRefreshTokenExpireTime()* 60 * 1000L, TimeUnit.MILLISECONDS);
+                    tokenProperties.getRefreshTokenExpireTime()* 60 * 1000L, TimeUnit.MILLISECONDS);
         }else{
             refreshBucket.set(currentTimeMillis,
-                    jwtProperties.getRefreshTokenExpireTime() * 60 * 1000L, TimeUnit.MILLISECONDS);
+                    tokenProperties.getRefreshTokenExpireTime() * 60 * 1000L, TimeUnit.MILLISECONDS);
         }
-        System.out.println(account + "-----------------" + password + "--------------------------" + currentTimeMillis);
         String token = JwtUtil.sign(account, password, currentTimeMillis,
-                jwtProperties.getTokenExpireTime() * 60 * 1000L);
+                tokenProperties.getTokenExpireTime() * 60 * 1000L);
         //写入header
         response.setHeader(SecurityConsts.REQUEST_AUTH_HEADER, token);
         response.setHeader("Access-Control-Expose-Headers", SecurityConsts.REQUEST_AUTH_HEADER);

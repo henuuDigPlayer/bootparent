@@ -1,3 +1,0 @@
-authorizationCache:
-  ttl: 3600000
-  maxIdleTime: 1800000

@@ -1,4 +1,4 @@
-package com.lindj.boot.config;
+package com.lindj.boot.config.shiro.token;
 
 import org.apache.shiro.authc.AuthenticationToken;
 

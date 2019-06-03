@@ -1,4 +1,4 @@
-package com.lindj.boot.config;
+package com.lindj.boot.config.shiro.token;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,11 +12,10 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "token")
 @Data
-public class JwtProperties {
+public class TokenProperties {
     /**
      * token过期时间，单位分钟
      */
-
     private Integer tokenExpireTime;
     /**
      * 刷新Token过期时间，单位分钟

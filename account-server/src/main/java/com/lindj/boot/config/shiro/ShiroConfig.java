@@ -1,6 +1,7 @@
-package com.lindj.boot.config;
+package com.lindj.boot.config.shiro;
 
-import com.github.streamone.shiro.cache.RedissonShiroCacheManager;
+import com.lindj.boot.config.shiro.cache.MyRedissonShiroCacheManager;
+import com.lindj.boot.config.shiro.token.TokenProperties;
 import com.lindj.boot.service.SysUserService;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
@@ -28,18 +29,15 @@ import java.util.Map;
 public class ShiroConfig {
 
     @Bean
-    public CacheManager cacheManager(RedissonClient redissonClient, JwtProperties jwtProperties) {
-        return new RedissonShiroCacheManager(redissonClient, "classpath:shiroRedisson.yml");
+    public CacheManager cacheManager(RedissonClient redissonClient, TokenProperties tokenProperties) {
+        return new MyRedissonShiroCacheManager(redissonClient, tokenProperties);
     }
+
     @Bean("securityManager")
     public DefaultWebSecurityManager getManager(UserRealm userRealm, CacheManager cacheManager) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         // 使用自己的realm
         manager.setRealm(userRealm);
-        /*
-         * 关闭shiro自带的session，详情见文档
-         * http://shiro.apache.org/session-management.html#SessionManagement-StatelessApplications%28Sessionless%29
-         */
         DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
         DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
         defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
@@ -56,13 +54,13 @@ public class ShiroConfig {
      * Shiro的Web过滤器Factory 命名:shiroFilter
      */
     @Bean(name = "shiroFilter")
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager securityManager,RedissonClient redissonClient, JwtProperties jwtProperties,
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager securityManager, RedissonClient redissonClient, TokenProperties tokenProperties,
                                                          SysUserService userService) {
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
         factoryBean.setSecurityManager(securityManager);
         // 添加自己的过滤器并且取名为jwt
         Map<String, Filter> filterMap = new HashMap<>();
-        filterMap.put("jwt", new TokenFilter(redissonClient, jwtProperties, userService));
+        filterMap.put("jwt", new TokenFilter(redissonClient, tokenProperties, userService));
         factoryBean.setFilters(filterMap);
         /*
          * 自定义url规则

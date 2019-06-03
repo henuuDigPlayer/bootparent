@@ -54,13 +54,14 @@ endpoints:
     enabled: true
 token:
   #  token过期时间，单位分钟
-  tokenExpireTime: 1
-  #  RefreshToken过期时间，单位：分钟, 24*60=1440
+  tokenExpireTime: 5
+  #  RefreshToken过期时间，单位：分钟
   refreshTokenExpireTime: 13
-  #  shiro缓存有效期，单位分钟,2*60=120
-  shiroCacheExpireTime: 10000
+  #  shiro缓存有效期，单位分钟
+  shiroCacheExpireTime: 5
   #  token加密密钥
   secretKey: storywebkey
+
 redisson:
   mode: sentinel
   enable: true

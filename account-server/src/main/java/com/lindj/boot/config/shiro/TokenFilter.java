@@ -1,19 +1,19 @@
-package com.lindj.boot.config;
+package com.lindj.boot.config.shiro;
 
 import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.lindj.boot.config.shiro.token.JwtToken;
+import com.lindj.boot.config.shiro.token.TokenProperties;
 import com.lindj.boot.service.SysUserService;
 import com.lindj.boot.util.JwtUtil;
 import com.lindj.boot.util.SecurityConsts;
 import com.zjdex.framework.util.data.StringUtil;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -36,29 +36,29 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
     private RedissonClient redissonClient;
-
-    private JwtProperties jwtProperties;
+    private TokenProperties tokenProperties;
     private SysUserService userService;
 
-    public TokenFilter(RedissonClient redissonClient, JwtProperties jwtProperties,
-                       SysUserService userService){
+    public TokenFilter(RedissonClient redissonClient, TokenProperties tokenProperties,
+                       SysUserService userService) {
         this.redissonClient = redissonClient;
-        this.jwtProperties = jwtProperties;
+        this.tokenProperties = tokenProperties;
         this.userService = userService;
     }
 
     /**
      * 判断用户是否想要登入。
-     * 检测header里面是否包含Authorization字段即可
+     * 检测header里面是否包含Authorization字段
+     *
+     * @param request  ServletRequest
+     * @param response ServletResponse
+     * @return boolean
      */
     @Override
     protected boolean isLoginAttempt(ServletRequest request, ServletResponse response) {
         HttpServletRequest req = (HttpServletRequest) request;
-        String authorization = req.getHeader("Authorization");
-
-        logger.info("登陆了：" + authorization);
+        String authorization = req.getHeader(SecurityConsts.REQUEST_AUTH_HEADER);
         return authorization != null;
     }
 
@@ -68,9 +68,9 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
      * 例如我们提供一个地址 GET /article
      * 登入用户和游客看到的内容是不同的
      * 如果在这里返回了false，请求会被直接拦截，用户看不到任何东西
-     * 所以我们在这里返回true，Controller中可以通过 subject.isAuthenticated() 来判断用户是否登入
+     * 所以我们在这里返回true
      * 如果有些资源只有登入用户才能访问，我们只需要在方法上面加上 @RequiresAuthentication 注解即可
-     * 但是这样做有一个缺点，就是不能够对GET,POST等请求进行分别过滤鉴权(因为我们重写了官方的方法)，但实际上对应用影响不大
+     * 但是这样做有一个缺点，就是不能够对GET,POST等请求进行分别过滤鉴权
      */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
@@ -82,20 +82,20 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
                 String msg = e.getMessage();
                 Throwable throwable = e.getCause();
                 if (throwable != null && throwable instanceof SignatureVerificationException) {
-                    msg = "Token或者密钥不正确(" + throwable.getMessage() + ")";
-                    System.out.println(msg);
+                    msg = "Token或者密钥不正确";
+                    logger.error("Token或者密钥不正确: {}", throwable.getMessage());
                 } else if (throwable != null && throwable instanceof TokenExpiredException) {
-                    System.out.println("刷新token");
                     // AccessToken已过期
                     if (this.refreshToken(request, response)) {
                         return true;
                     } else {
-                        msg = "Token已过期(" + throwable.getMessage() + ")";
-                        System.out.println(msg);
+                        msg = "Token已过期";
+                        logger.error("Token已过期: {}", throwable.getMessage());
                     }
                 } else {
                     if (throwable != null) {
                         msg = throwable.getMessage();
+                        logger.error("异常错误: {}", throwable.getMessage());
                     }
                 }
                 response(request, response, msg);
@@ -106,6 +106,7 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
         return true;
     }
 
+
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) {
         response(request, response, "");
@@ -114,18 +115,20 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
 
 
     /**
+     * 当调用subject.login方法时，会将相应的逻辑转到Realm中的doGetAuthenticationInfo方法，进行认证
      *
+     * @param request  ServletRequest
+     * @param response ServletResponse
+     * @return boolean
      */
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String authorization = httpServletRequest.getHeader("Authorization");
-
         JwtToken token = new JwtToken(authorization);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         getSubject(request, response).login(token);
         // 如果没有抛出异常则代表登入成功，返回true
-        logger.info("executeLogin");
         return true;
     }
 
@@ -148,7 +151,7 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
     }
 
     /**
-     * 将非法请求跳转到 /401
+     * 将非法请求跳转到
      */
     private void response(ServletRequest req, ServletResponse resp, String message) {
         HttpServletResponse httpServletResponse = (HttpServletResponse) resp;
@@ -159,8 +162,8 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
         try {
             out = httpServletResponse.getWriter();
             Map<String, Object> result = new HashMap<String, Object>();
-            result.put("code", HttpStatus.FORBIDDEN.value());
-            result.put("mesage", message);
+            result.put("code", HttpStatus.UNAUTHORIZED.value());
+            result.put("message", message);
             out.append(JSON.toJSONString(result));
         } catch (IOException e) {
             logger.error("返回Response信息出现IOException异常:" + e.getMessage());
@@ -180,9 +183,6 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
         // 获取当前Token的帐号信息
         String account = JwtUtil.getClaim(token, SecurityConsts.ACCOUNT);
 
-        System.out.println(token);
-        System.out.println(account);
-
         String refreshTokenCacheKey = SecurityConsts.PREFIX_SHIRO_REFRESH_TOKEN + account;
         RBucket<String> bucket = redissonClient.getBucket(refreshTokenCacheKey);
         // 判断Redis中RefreshToken是否存在
@@ -191,25 +191,18 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
             // 相比如果一致，进行AccessToken刷新
             String currentTimeMillisRedis = bucket.get();
             String tokenMillis = JwtUtil.getClaim(token, SecurityConsts.CURRENT_TIME_MILLIS);
-            System.out.println(currentTimeMillisRedis + "+++++++++" + tokenMillis);
             if (tokenMillis.equals(currentTimeMillisRedis)) {
-
                 // 设置RefreshToken中的时间戳为当前最新时间戳
                 String currentTimeMillis = String.valueOf(System.currentTimeMillis());
-                Integer refreshTokenExpireTime = this.jwtProperties.getRefreshTokenExpireTime();
+                Integer refreshTokenExpireTime = this.tokenProperties.getRefreshTokenExpireTime();
                 bucket.set(currentTimeMillis, refreshTokenExpireTime * 60 * 1000L, TimeUnit.MILLISECONDS);
-                System.out.println("设置refreshToken过期时间：" + currentTimeMillis);
                 // 刷新AccessToken，为当前最新时间戳
                 token = JwtUtil.sign(account,
                         userService.getUserByUsername(account).getPassword(), currentTimeMillis,
-                        this.jwtProperties.getTokenExpireTime() * 60 * 1000L);
-
-                System.out.println("生成新tokren：" + token);
-
+                        this.tokenProperties.getTokenExpireTime() * 60 * 1000L);
                 // 使用AccessToken 再次提交给ShiroRealm进行认证，如果没有抛出异常则登入成功，返回true
                 JwtToken jwtToken = new JwtToken(token);
                 this.getSubject(request, response).login(jwtToken);
-
                 // 设置响应的Header头新Token
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;
                 httpServletResponse.setHeader(SecurityConsts.REQUEST_AUTH_HEADER, token);
@@ -217,7 +210,6 @@ public class TokenFilter extends BasicHttpAuthenticationFilter {
                 return true;
             }
         }
-        System.out.println("refresh time");
         return false;
     }
 

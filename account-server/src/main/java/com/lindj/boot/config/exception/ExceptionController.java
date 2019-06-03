@@ -1,7 +1,6 @@
-package com.lindj.boot.config;
+package com.lindj.boot.config.exception;
 
 import com.lindj.boot.util.ResponseBean;
-import com.lindj.boot.util.UnauthorizedException;
 import org.apache.shiro.ShiroException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +28,12 @@ public class ExceptionController {
         return new ResponseBean(401, e.getMessage(), null);
     }*/
 
-    // 捕捉UnauthorizedException
+/*    // 捕捉UnauthorizedException
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseBean handle401() {
         return new ResponseBean(401, "Unauthorized", null);
-    }
+    }*/
 
     // 捕捉其他所有异常
     @ExceptionHandler(Exception.class)
