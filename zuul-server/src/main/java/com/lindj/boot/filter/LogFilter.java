@@ -64,7 +64,8 @@ public class LogFilter extends ZuulFilter {
 
         try {
             String value = JsonUtil.objectToJson(getLogBean());
-            kafkaTemplate.send("logs", value);
+            logger.info(value);
+//            kafkaTemplate.send("logs", value);
         } catch (IOException e) {
             e.printStackTrace();
         }
