@@ -1,32 +1,14 @@
 package com.lindj.boot.filter;
 
-import com.lindj.boot.bean.LogBean;
-import com.lindj.boot.model.Route;
 import com.lindj.boot.service.RouteService;
-import com.netflix.util.Pair;
 import com.netflix.zuul.ZuulFilter;
-import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
-import com.zjdex.framework.util.constant.ConstantUtil;
-import com.zjdex.framework.util.data.DateUtil;
-import com.zjdex.framework.util.data.JsonUtil;
-import com.zjdex.framework.util.data.StringUtil;
-import com.zjdex.framework.util.http.HttpRequestUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StreamUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author lindj
@@ -40,9 +22,9 @@ public class LogFilter extends ZuulFilter {
 
     @Autowired
     private RouteService routeService;
-
+/*
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;*/
 
     @Override
     public String filterType() {
@@ -62,13 +44,13 @@ public class LogFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
 
-        try {
+      /*  try {
             String value = JsonUtil.objectToJson(getLogBean());
             logger.info(value);
 //            kafkaTemplate.send("logs", value);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 
@@ -77,7 +59,7 @@ public class LogFilter extends ZuulFilter {
      *
      * @return
      */
-    private LogBean getLogBean() throws IOException {
+ /*   private LogBean getLogBean() throws IOException {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
         String servletPath = request.getServletPath();
@@ -127,5 +109,5 @@ public class LogFilter extends ZuulFilter {
         }
 
         return logBean;
-    }
+    }*/
 }

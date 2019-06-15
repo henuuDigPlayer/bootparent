@@ -59,11 +59,6 @@
             <artifactId>spring-kafka</artifactId>
             <version>${spring-kafka}</version>
         </dependency>
-        <dependency>
-            <groupId>com.lindj.boot</groupId>
-            <artifactId>common</artifactId>
-            <version>${common}</version>
-        </dependency>
     </dependencies>
 
     <build>
